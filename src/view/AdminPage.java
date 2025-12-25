@@ -5,6 +5,11 @@
 package view;
 
 import java.awt.CardLayout;
+import javax.swing.table.DefaultTableModel;
+import model.ClothingItems;
+import controller.inventorycontroller;
+import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -13,12 +18,15 @@ import java.awt.CardLayout;
 public class AdminPage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminPage.class.getName());
-
+   private final inventorycontroller controller;
     /**
      * Creates new form AdminPage
      */
     public AdminPage() {
         initComponents();
+        controller = new inventorycontroller(); // initialize controller
+        loadInventoryTable(); 
+         // show table initially
     }
 
     /**
@@ -143,10 +151,25 @@ public class AdminPage extends javax.swing.JFrame {
         jLabel2.setText("Items in store");
 
         CreateButton.setText("Create");
+        CreateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CreateButtonActionPerformed(evt);
+            }
+        });
 
         UpdateButton.setText("Update");
+        UpdateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UpdateButtonActionPerformed(evt);
+            }
+        });
 
         DeleteButton.setText("Delete");
+        DeleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DeleteButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout InventoryPanelLayout = new javax.swing.GroupLayout(InventoryPanel);
         InventoryPanel.setLayout(InventoryPanelLayout);
@@ -186,7 +209,7 @@ public class AdminPage extends javax.swing.JFrame {
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 102));
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Alum's Clothing");
+        jLabel1.setText("Alum Clothing");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -244,7 +267,64 @@ public class AdminPage extends javax.swing.JFrame {
        cl.show(RightPanel, "card3"); // TODO add your handling code here:
     }//GEN-LAST:event_InventoryButtonActionPerformed
 
+    
+
+     public void loadInventoryTable() {
+    DefaultTableModel model = (DefaultTableModel) InventoryTable.getModel();
+    model.setRowCount(0); // clear existing rows
+
+    for (ClothingItems item : controller.getInventory()) {
+        model.addRow(new Object[]{
+            item.getId(),
+            item.getName(),
+            item.getCategory(),
+            item.getSize(),
+            item.getPrice(),
+            item.getStock()
+        });
+    }
+}
+
+    
+
+    private void CreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateButtonActionPerformed
+         ItemsAction actionFrame = new ItemsAction(controller, this, null);
+        actionFrame.setVisible(true);
+    }//GEN-LAST:event_CreateButtonActionPerformed
+   
+
+
+    private void UpdateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateButtonActionPerformed
+        int selectedRow = InventoryTable.getSelectedRow();
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Please select an item to update!");
+        return;
+    }
+    int id = (int) InventoryTable.getValueAt(selectedRow, 0);
+    ClothingItems item = controller.getItemById(id);
+    ItemsAction actionFrame = new ItemsAction(controller, this, item);
+    actionFrame.setVisible(true);
+    }//GEN-LAST:event_UpdateButtonActionPerformed
+
+    private void DeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButtonActionPerformed
+        int selectedRow = InventoryTable.getSelectedRow();
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Please select an item to delete!");
+        return;
+    }
+    int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this item?");
+    if (confirm == JOptionPane.YES_OPTION) {
+        int id = (int) InventoryTable.getValueAt(selectedRow, 0);
+        controller.deleteItem(id);
+        loadInventoryTable();
+        JOptionPane.showMessageDialog(this, "Item deleted!");
+    }// TODO add your handling code here:
+    }//GEN-LAST:event_DeleteButtonActionPerformed
+
+    
+
     /**
+     * 
      * @param args the command line arguments
      */
     public static void main(String args[]) {
