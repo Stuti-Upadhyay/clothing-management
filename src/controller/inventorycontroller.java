@@ -59,6 +59,17 @@ public class inventorycontroller {
         }
         return null;
     }
+    // Check duplicate item by name (used by View validation)
+public boolean isDuplicateItem(String name, int currentId) {
+    for (ClothingItems item : inventory) {
+        // Ignore the same item when updating
+        if (item.getName().equalsIgnoreCase(name) && item.getId() != currentId) {
+            return true;
+        }
+    }
+    return false;
+}
+
 }
 
 

@@ -175,31 +175,65 @@ public class Action extends javax.swing.JFrame {
 
     private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
         try {
-        int id = Integer.parseInt(IDTF.getText());
-        String name = NameTF.getText();
-        String category = CategoryTF.getText();
-        String size = SizeTF.getText();
-        double price = Double.parseDouble(PriceTF.getText());
-        int stock = Integer.parseInt(StockTF.getText());
+    
+    if (IDTF.getText().isEmpty() || NameTF.getText().isEmpty() ||
+        CategoryTF.getText().isEmpty() || SizeTF.getText().isEmpty() ||
+        PriceTF.getText().isEmpty() || StockTF.getText().isEmpty()) {
 
-        if (name.isEmpty() || category.isEmpty() || size.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Fill all fields");
-            return;
-        }
-
-        if (controller.getItemById(id) == null) {
-            controller.addItem(name, category, size, price, stock);
-            JOptionPane.showMessageDialog(this, "Item added");
-        } else {
-            controller.updateItem(id, name, category, size, price, stock);
-            JOptionPane.showMessageDialog(this, "Item updated");
-        }
-        adminPage.loadInventoryTable(); 
-        this.dispose();
-
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Invalid number input");
+        JOptionPane.showMessageDialog(this, "All fields are required");
+        return;
     }
+
+    int id = Integer.parseInt(IDTF.getText());
+    double price = Double.parseDouble(PriceTF.getText());
+    int stock = Integer.parseInt(StockTF.getText());
+
+    String name = NameTF.getText().trim();
+    String category = CategoryTF.getText().trim();
+    String size = SizeTF.getText().trim();
+
+    // 3. Length validation
+    if (name.length() > 50) {
+        JOptionPane.showMessageDialog(this, "Item name must be less than 50 characters");
+        return;
+    }
+
+    if (category.length() > 30) {
+        JOptionPane.showMessageDialog(this, "Category must be less than 30 characters");
+        return;
+    }
+
+    if (!size.matches("S|M|L|XL|XXL")) {
+        JOptionPane.showMessageDialog(this, "Size must be S, M, L, XL, or XXL");
+        return;
+    }
+
+    if (price <= 0 || stock < 0) {
+        JOptionPane.showMessageDialog(this, "Price must be positive and stock cannot be negative");
+        return;
+    }
+
+    if (controller.isDuplicateItem(name, id)) {
+        JOptionPane.showMessageDialog(this, "Item with this name already exists");
+        return;
+    }
+
+   
+    if (controller.getItemById(id) == null) {
+        controller.addItem(name, category, size, price, stock);
+        JOptionPane.showMessageDialog(this, "Item added successfully");
+    } else {
+        controller.updateItem(id, name, category, size, price, stock);
+        JOptionPane.showMessageDialog(this, "Item updated successfully");
+    }
+
+    adminPage.loadInventoryTable();
+    this.dispose();
+
+} catch (NumberFormatException e) {
+    JOptionPane.showMessageDialog(this, "Invalid number format in ID, Price, or Stock");
+}
+
     }//GEN-LAST:event_SaveButtonActionPerformed
 
     private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
