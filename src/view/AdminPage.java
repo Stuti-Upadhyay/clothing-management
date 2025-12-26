@@ -19,15 +19,18 @@ public class AdminPage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminPage.class.getName());
    private final inventorycontroller controller;
+   
     /**
      * Creates new form AdminPage
      */
-    public AdminPage() {
+    public AdminPage(inventorycontroller controller) {
         initComponents();
-        controller = new inventorycontroller(); // initialize controller
+        this.controller = controller; // initialize controller
         loadInventoryTable(); 
-         // show table initially
+        
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -253,8 +256,8 @@ public class AdminPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void LogoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutButtonActionPerformed
-        dispose(); 
-        new LoginPage().setVisible(true); // TODO add your handling code here:
+        dispose();
+    new LoginPage(controller).setVisible(true);
     }//GEN-LAST:event_LogoutButtonActionPerformed
 
     private void DashboardButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DashboardButtonActionPerformed
@@ -288,7 +291,7 @@ public class AdminPage extends javax.swing.JFrame {
     
 
     private void CreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateButtonActionPerformed
-         ItemsAction actionFrame = new ItemsAction(controller, this, null);
+        Action actionFrame = new Action(controller,this);
         actionFrame.setVisible(true);
     }//GEN-LAST:event_CreateButtonActionPerformed
    
@@ -296,58 +299,46 @@ public class AdminPage extends javax.swing.JFrame {
 
     private void UpdateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateButtonActionPerformed
         int selectedRow = InventoryTable.getSelectedRow();
+
     if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "Please select an item to update!");
+        JOptionPane.showMessageDialog(this, "Select an item first!");
         return;
     }
+
     int id = (int) InventoryTable.getValueAt(selectedRow, 0);
     ClothingItems item = controller.getItemById(id);
-    ItemsAction actionFrame = new ItemsAction(controller, this, item);
+
+    Action actionFrame = new Action(controller,this);
+    actionFrame.setFields(item);   // fills form from selected row
     actionFrame.setVisible(true);
     }//GEN-LAST:event_UpdateButtonActionPerformed
 
     private void DeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButtonActionPerformed
         int selectedRow = InventoryTable.getSelectedRow();
+
     if (selectedRow == -1) {
         JOptionPane.showMessageDialog(this, "Please select an item to delete!");
         return;
     }
-    int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this item?");
+
+    int confirm = JOptionPane.showConfirmDialog(
+        this,
+        "Are you sure you want to delete this item?",
+        "Confirm Delete",
+        JOptionPane.YES_NO_OPTION
+    );
+
     if (confirm == JOptionPane.YES_OPTION) {
         int id = (int) InventoryTable.getValueAt(selectedRow, 0);
         controller.deleteItem(id);
-        loadInventoryTable();
-        JOptionPane.showMessageDialog(this, "Item deleted!");
-    }// TODO add your handling code here:
+        loadInventoryTable();   // refresh table
+        JOptionPane.showMessageDialog(this, "Item deleted successfully!");
+    }
     }//GEN-LAST:event_DeleteButtonActionPerformed
 
     
 
-    /**
-     * 
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new AdminPage().setVisible(true));
-    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CreateButton;

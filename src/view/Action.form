@@ -23,7 +23,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
+          <Component id="jPanel1" alignment="0" min="-2" max="-2" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -43,27 +43,27 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
                                   <Component id="StockL" min="-2" pref="79" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="StockTF" min="-2" pref="140" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="102" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
                                   <Component id="PriceL" min="-2" pref="79" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="PriceTF" min="-2" pref="140" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="102" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
                                   <Component id="SizeL" min="-2" pref="79" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="SizeTF" min="-2" pref="140" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="102" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="CategoryL" alignment="0" min="-2" pref="79" max="-2" attributes="0"/>
                                       <Component id="NameL" alignment="0" min="-2" pref="79" max="-2" attributes="0"/>
@@ -71,9 +71,9 @@
                                   </Group>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="IDTF" min="-2" pref="140" max="-2" attributes="0"/>
-                                      <Component id="NameTF" min="-2" pref="140" max="-2" attributes="0"/>
-                                      <Component id="CategoryTF" min="-2" pref="140" max="-2" attributes="0"/>
+                                      <Component id="IDTF" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
+                                      <Component id="NameTF" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
+                                      <Component id="CategoryTF" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -94,8 +94,8 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="64" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="IDL" min="-2" max="-2" attributes="0"/>
-                      <Component id="IDTF" min="-2" pref="22" max="-2" attributes="0"/>
+                      <Component id="IDL" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="IDTF" alignment="1" min="-2" pref="22" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -127,7 +127,7 @@
                       <Component id="SaveButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="CancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="98" max="32767" attributes="0"/>
+                  <EmptySpace pref="58" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

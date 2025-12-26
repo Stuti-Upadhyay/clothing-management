@@ -11,42 +11,54 @@ import model.ClothingItems;
 public class inventorycontroller {
 
     private final List<ClothingItems> inventory;
+    private int nextId;
 
     public inventorycontroller() {
         inventory = new ArrayList<>();
-        // Start empty — no preloaded items
+        nextId = 1; // start IDs from 1
     }
 
     public List<ClothingItems> getInventory() {
-        return inventory;
+        return inventory; // simple, just return the list
     }
 
-    public void addItem(ClothingItems item) {
+    // Add item (simple validation)
+    public boolean addItem(String name, String category, String size, double price, int stock) {
+        if (name.isEmpty() || category.isEmpty() || size.isEmpty()) return false;
+        if (price < 0 || stock < 0) return false;
+
+        ClothingItems item = new ClothingItems(nextId++, name, category, size, price, stock);
         inventory.add(item);
+        return true;
     }
 
-    public void updateItem(int id, ClothingItems updatedItem) {
-        for (int i = 0; i < inventory.size(); i++) {
-            if (inventory.get(i).getId() == id) {
-                inventory.set(i, updatedItem);
-                break;
-            }
-        }
+    // Update item
+    public boolean updateItem(int id, String name, String category, String size, double price, int stock) {
+        ClothingItems item = getItemById(id);
+        if (item == null) return false;
+        if (name.isEmpty() || category.isEmpty() || size.isEmpty()) return false;
+        if (price < 0 || stock < 0) return false;
+
+        item.setName(name);
+        item.setCategory(category);
+        item.setSize(size);
+        item.setPrice(price);
+        item.setStock(stock);
+        return true;
     }
 
-    public void deleteItem(int id) {
-        inventory.removeIf(item -> item.getId() == id);
+    // Delete item
+    public boolean deleteItem(int id) {
+        return inventory.removeIf(item -> item.getId() == id);
     }
 
+    // Get item by ID
     public ClothingItems getItemById(int id) {
-        return inventory.stream()
-                .filter(item -> item.getId() == id)
-                .findFirst()
-                .orElse(null);
-    }
-
-    public int getNextId() {
-        return inventory.size() + 1;
+        for (ClothingItems item : inventory) {
+            if (item.getId() == id) return item;
+        }
+        return null;
     }
 }
+
 

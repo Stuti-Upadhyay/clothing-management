@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package view;
-
+import controller.inventorycontroller;
 /**
  *
  * @author User
@@ -11,13 +11,17 @@ package view;
 public class LoginPage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LoginPage.class.getName());
+    private final inventorycontroller controller;
 
     /**
      * Creates new form LoginPage
      */
-    public LoginPage() {
+    public LoginPage(inventorycontroller controller) {
         initComponents();
+        this.controller = controller;
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -48,6 +52,11 @@ public class LoginPage extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(0, 51, 153));
 
         jButton1.setText("Login");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Lucida Calligraphy", 1, 36)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -122,29 +131,38 @@ public class LoginPage extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String username = jTextField2.getText().trim();
+        String password = jTextField5.getText().trim();
+
+    if (username.equals("admin") && password.equals("admin")) {
+        AdminPage adminPage = new AdminPage(controller);
+        adminPage.setVisible(true);
+        this.dispose();
+
+    } else if (username.equals("user") && password.equals("user")) {
+        UserPage userPage = new UserPage(controller);
+        userPage.setVisible(true);
+        this.dispose();
+
+    } else {
+        javax.swing.JOptionPane.showMessageDialog(
+            this,
+            "Invalid username or password!",
+            "Login Failed",
+            javax.swing.JOptionPane.ERROR_MESSAGE
+        );
+    }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new LoginPage().setVisible(true));
+    public static void main (String[]args){
+        java.awt.EventQueue.invokeLater(() -> {
+        inventorycontroller controller = new inventorycontroller();
+        new LoginPage(controller).setVisible(true);
+    });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
