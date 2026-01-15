@@ -231,7 +231,7 @@ public class Action extends javax.swing.JFrame {
     this.dispose();
 
 } catch (NumberFormatException e) {
-    JOptionPane.showMessageDialog(this, "Invalid number format in ID, Price, or Stock");
+    JOptionPane.showMessageDialog(this, "Invalid number format in ID");
 }
 
     }//GEN-LAST:event_SaveButtonActionPerformed
