@@ -44,16 +44,16 @@ public class Action extends javax.swing.JFrame {
         StockL = new javax.swing.JLabel();
         IDTF = new javax.swing.JTextField();
         NameTF = new javax.swing.JTextField();
-        CategoryTF = new javax.swing.JTextField();
         SizeTF = new javax.swing.JTextField();
         PriceTF = new javax.swing.JTextField();
         StockTF = new javax.swing.JTextField();
         SaveButton = new javax.swing.JButton();
         CancelButton = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(0, 0, 102));
+        jPanel1.setBackground(new java.awt.Color(128, 0, 32));
 
         IDL.setForeground(new java.awt.Color(255, 255, 255));
         IDL.setText("ID");
@@ -87,6 +87,13 @@ public class Action extends javax.swing.JFrame {
             }
         });
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Saree", "Shawl", "Lehenga", "Kurti", "Topi", "Cholo" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -114,10 +121,10 @@ public class Action extends javax.swing.JFrame {
                                     .addComponent(NameL, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(IDL, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(IDTF, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(NameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(CategoryTF, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(IDTF, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                                    .addComponent(NameTF, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(88, 88, 88)
                         .addComponent(SaveButton)
@@ -137,9 +144,9 @@ public class Action extends javax.swing.JFrame {
                     .addComponent(NameL)
                     .addComponent(NameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(CategoryL)
-                    .addComponent(CategoryTF, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(SizeL)
@@ -176,20 +183,22 @@ public class Action extends javax.swing.JFrame {
     private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
         try {
     
-    if (IDTF.getText().isEmpty() || NameTF.getText().isEmpty() ||
-        CategoryTF.getText().isEmpty() || SizeTF.getText().isEmpty() ||
-        PriceTF.getText().isEmpty() || StockTF.getText().isEmpty()) {
+    if (NameTF.getText().isEmpty() ||
+    SizeTF.getText().isEmpty() ||
+    PriceTF.getText().isEmpty() ||
+    StockTF.getText().isEmpty()) {
 
-        JOptionPane.showMessageDialog(this, "All fields are required");
-        return;
-    }
+    JOptionPane.showMessageDialog(this, "All fields are required");
+    return;
+}
+
 
     int id = Integer.parseInt(IDTF.getText());
     double price = Double.parseDouble(PriceTF.getText());
     int stock = Integer.parseInt(StockTF.getText());
 
     String name = NameTF.getText().trim();
-    String category = CategoryTF.getText().trim();
+    String category = jComboBox1.getSelectedItem().toString();
     String size = SizeTF.getText().trim();
 
     // 3. Length validation
@@ -197,12 +206,6 @@ public class Action extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Item name must be less than 50 characters");
         return;
     }
-
-    if (category.length() > 30) {
-        JOptionPane.showMessageDialog(this, "Category must be less than 30 characters");
-        return;
-    }
-
     if (!size.matches("S|M|L|XL|XXL")) {
         JOptionPane.showMessageDialog(this, "Size must be S, M, L, XL, or XXL");
         return;
@@ -240,11 +243,15 @@ public class Action extends javax.swing.JFrame {
         this.dispose();        // TODO add your handling code here:
     }//GEN-LAST:event_CancelButtonActionPerformed
 
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
     
     public void setFields(ClothingItems item) {
     IDTF.setText(String.valueOf(item.getId()));
     NameTF.setText(item.getName());
-    CategoryTF.setText(item.getCategory());
+    jComboBox1.setSelectedItem(item.getCategory());
     SizeTF.setText(item.getSize());
     PriceTF.setText(String.valueOf(item.getPrice()));
     StockTF.setText(String.valueOf(item.getStock()));
@@ -256,7 +263,6 @@ public class Action extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CancelButton;
     private javax.swing.JLabel CategoryL;
-    private javax.swing.JTextField CategoryTF;
     private javax.swing.JLabel IDL;
     private javax.swing.JTextField IDTF;
     private javax.swing.JLabel NameL;
@@ -268,6 +274,7 @@ public class Action extends javax.swing.JFrame {
     private javax.swing.JTextField SizeTF;
     private javax.swing.JLabel StockL;
     private javax.swing.JTextField StockTF;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

@@ -8,7 +8,9 @@ import java.awt.CardLayout;
 import javax.swing.table.DefaultTableModel;
 import model.ClothingItems;
 import controller.inventorycontroller;
+import controller.OrderController;
 import javax.swing.JOptionPane;
+import model.Order;
 
 
 /**
@@ -19,16 +21,20 @@ public class AdminPage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminPage.class.getName());
    private final inventorycontroller controller;
-   
+   private final OrderController orderController;
+
     /**
      * Creates new form AdminPage
      */
-    public AdminPage(inventorycontroller controller) {
-        initComponents();
-        this.controller = controller; // initialize controller
-        loadInventoryTable(); 
-        
-    }
+    public AdminPage(inventorycontroller controller, OrderController orderController) {
+    initComponents();
+    this.controller = controller;
+    this.orderController = orderController;
+    loadDashboard();
+    loadRecentProductsTable();
+    loadInventoryTable();
+}
+
     
     
 
@@ -55,8 +61,6 @@ public class AdminPage extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         TotalProducts = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        OrdersShipped = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
         TotalOrders = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -71,18 +75,22 @@ public class AdminPage extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         SearchButton1 = new javax.swing.JButton();
-        SearchingType = new javax.swing.JComboBox<>();
         jTextField1 = new javax.swing.JTextField();
-        SortByAdmin1 = new javax.swing.JComboBox<>();
+        SortByIDButton = new javax.swing.JButton();
+        SortByNameButton = new javax.swing.JButton();
+        jTextField2 = new javax.swing.JTextField();
+        SearchButton2 = new javax.swing.JButton();
         OrderPanel = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         OrderTable = new javax.swing.JTable();
-        OrderSorting = new javax.swing.JComboBox<>();
-        jTextField2 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        SearchingOrder = new javax.swing.JComboBox<>();
+        RemoveLastOrder = new javax.swing.JButton();
+        DeleteSelectedOrder = new javax.swing.JButton();
+        SearchButton3 = new javax.swing.JButton();
+        SearchButton4 = new javax.swing.JButton();
+        jTextField3 = new javax.swing.JTextField();
+        jTextField4 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -223,25 +231,6 @@ public class AdminPage extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabel2.setText("Orders Shipped");
-
-        javax.swing.GroupLayout OrdersShippedLayout = new javax.swing.GroupLayout(OrdersShipped);
-        OrdersShipped.setLayout(OrdersShippedLayout);
-        OrdersShippedLayout.setHorizontalGroup(
-            OrdersShippedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(OrdersShippedLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(55, Short.MAX_VALUE))
-        );
-        OrdersShippedLayout.setVerticalGroup(
-            OrdersShippedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(OrdersShippedLayout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         jLabel7.setText("Total Orders");
 
         javax.swing.GroupLayout TotalOrdersLayout = new javax.swing.GroupLayout(TotalOrders);
@@ -310,8 +299,7 @@ public class AdminPage extends javax.swing.JFrame {
                         .addComponent(TotalProducts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
                         .addComponent(TotalOrders, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(48, 48, 48)
-                        .addComponent(OrdersShipped, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(202, 202, 202)))
                 .addGap(52, 52, 52))
             .addGroup(DashboardPanelLayout.createSequentialGroup()
                 .addGap(168, 168, 168)
@@ -325,8 +313,7 @@ public class AdminPage extends javax.swing.JFrame {
                 .addGap(39, 39, 39)
                 .addGroup(DashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(TotalOrders, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(TotalProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(OrdersShipped, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(TotalProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -415,16 +402,33 @@ public class AdminPage extends javax.swing.JFrame {
                 .addGap(15, 15, 15))
         );
 
-        SearchButton1.setText("Search");
-
-        SearchingType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        SearchingType.addActionListener(new java.awt.event.ActionListener() {
+        SearchButton1.setText("Linear Search");
+        SearchButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SearchingTypeActionPerformed(evt);
+                SearchButton1ActionPerformed(evt);
             }
         });
 
-        SortByAdmin1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        SortByIDButton.setText("Sort By ID");
+        SortByIDButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SortByIDButtonActionPerformed(evt);
+            }
+        });
+
+        SortByNameButton.setText("Sort By Name");
+        SortByNameButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SortByNameButtonActionPerformed(evt);
+            }
+        });
+
+        SearchButton2.setText("Binary Search");
+        SearchButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SearchButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout InventoryPanelLayout = new javax.swing.GroupLayout(InventoryPanel);
         InventoryPanel.setLayout(InventoryPanelLayout);
@@ -440,30 +444,44 @@ public class AdminPage extends javax.swing.JFrame {
                 .addComponent(DeleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(56, 56, 56))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, InventoryPanelLayout.createSequentialGroup()
-                .addContainerGap(25, Short.MAX_VALUE)
-                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(InventoryPanelLayout.createSequentialGroup()
-                        .addComponent(SortByAdmin1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(25, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(InventoryPanelLayout.createSequentialGroup()
+                        .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(InventoryPanelLayout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(InventoryPanelLayout.createSequentialGroup()
+                                .addGap(24, 24, 24)
+                                .addComponent(SortByIDButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(SortByNameButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(SearchingType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(SearchButton1)))
+                        .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(SearchButton1)
+                            .addComponent(SearchButton2))))
                 .addGap(31, 31, 31))
         );
         InventoryPanelLayout.setVerticalGroup(
             InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(InventoryPanelLayout.createSequentialGroup()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
-                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SearchButton2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(SearchButton1)
-                        .addComponent(SearchingType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(SortByAdmin1))
+                    .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(SortByNameButton)
+                        .addComponent(SortByIDButton)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -512,7 +530,7 @@ public class AdminPage extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "OrderID", "User Name", "Category", "Size", "Quantity", "Total ", "Status", "Date"
+                "OrderID", "User Name", "Phone", "Address", "Item Name", "Quantity", "Total ", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -536,43 +554,77 @@ public class AdminPage extends javax.swing.JFrame {
             OrderTable.getColumnModel().getColumn(7).setResizable(false);
         }
 
-        OrderSorting.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        RemoveLastOrder.setText("Remove Last Order");
+        RemoveLastOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RemoveLastOrderActionPerformed(evt);
+            }
+        });
 
-        jButton1.setText("Search");
+        DeleteSelectedOrder.setText("Delete");
+        DeleteSelectedOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DeleteSelectedOrderActionPerformed(evt);
+            }
+        });
 
-        SearchingOrder.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        SearchButton3.setText("Linear Search");
+        SearchButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SearchButton3ActionPerformed(evt);
+            }
+        });
+
+        SearchButton4.setText("Binary Search");
+        SearchButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SearchButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout OrderPanelLayout = new javax.swing.GroupLayout(OrderPanel);
         OrderPanel.setLayout(OrderPanelLayout);
         OrderPanelLayout.setHorizontalGroup(
             OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(OrderPanelLayout.createSequentialGroup()
+                .addGap(37, 37, 37)
+                .addComponent(RemoveLastOrder)
+                .addGap(115, 115, 115)
+                .addComponent(DeleteSelectedOrder)
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, OrderPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(OrderPanelLayout.createSequentialGroup()
-                        .addComponent(OrderSorting, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(194, 194, 194)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
-                        .addComponent(SearchingOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 601, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, OrderPanelLayout.createSequentialGroup()
+                        .addComponent(SearchButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 601, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, OrderPanelLayout.createSequentialGroup()
+                        .addComponent(SearchButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(15, 15, 15))
         );
         OrderPanelLayout.setVerticalGroup(
             OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(OrderPanelLayout.createSequentialGroup()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
+                .addGap(12, 12, 12)
                 .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(OrderSorting, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(SearchingOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(SearchButton3)
+                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SearchButton4)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(OrderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(RemoveLastOrder)
+                    .addComponent(DeleteSelectedOrder))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
@@ -595,15 +647,41 @@ public class AdminPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void LogoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutButtonActionPerformed
-        dispose();
-    new LoginPage(controller).setVisible(true);
+        this.dispose();
+    new LoginPage(controller, orderController).setVisible(true);
     }//GEN-LAST:event_LogoutButtonActionPerformed
 
     private void DashboardButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DashboardButtonActionPerformed
         CardLayout cl = (CardLayout)(RightPanel.getLayout());
-        cl.show(RightPanel, "card4");// TODO add your handling code here:
+        cl.show(RightPanel, "card4");
+        loadDashboard();
+        loadRecentProductsTable();
     }//GEN-LAST:event_DashboardButtonActionPerformed
 
+    private void loadDashboard() {
+    jLabel1.setText("Products Available: " + controller.getInventory().size());
+    jLabel7.setText("Total Orders: " + orderController.getOrders().size());
+}
+    private void loadRecentProductsTable() {
+    DefaultTableModel model =
+        (DefaultTableModel) RecentProductsTable1.getModel();
+
+    model.setRowCount(0);
+
+    for (ClothingItems item : controller.getRecentItems()) {
+        model.addRow(new Object[]{
+            item.getId(),
+            item.getName(),
+            item.getCategory(),
+            item.getSize(),
+            item.getPrice(),
+            item.getStock()
+        });
+    }
+}
+
+
+    
     private void InventoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InventoryButtonActionPerformed
        CardLayout cl = (CardLayout)(RightPanel.getLayout());
        cl.show(RightPanel, "card3"); // TODO add your handling code here:
@@ -678,21 +756,345 @@ public class AdminPage extends javax.swing.JFrame {
     private void OrderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OrderButtonActionPerformed
        CardLayout cl = (CardLayout)(RightPanel.getLayout());
        cl.show(RightPanel, "orderPanel"); 
+       loadOrdersTable();
     }//GEN-LAST:event_OrderButtonActionPerformed
 
-    private void SearchingTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchingTypeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_SearchingTypeActionPerformed
+    public void loadOrdersTable() {
+    DefaultTableModel model = (DefaultTableModel) OrderTable.getModel();
+    model.setRowCount(0);
+
+    for (Order order : orderController.getOrders()) {
+        model.addRow(new Object[]{
+            order.getOrderId(),
+            order.getCustomerName(),
+            order.getPhone(),
+            order.getAddress(),
+            order.getItemName(),
+            order.getQuantity(),
+            order.getTotal(),
+            order.getDate()
+        });
+    }
+}
+    private void SearchButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchButton1ActionPerformed
+        String key = jTextField1.getText().trim();
+
+    if (key.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Enter product name!");
+        return;
+    }
+
+    DefaultTableModel model =
+            (DefaultTableModel) InventoryTable.getModel();
+    model.setRowCount(0);
+
+    boolean found = false;
+
+    for (ClothingItems item : controller.getInventory()) {
+        if (item.getName().equalsIgnoreCase(key)) {
+            model.addRow(new Object[]{
+                item.getId(),
+                item.getName(),
+                item.getCategory(),
+                item.getSize(),
+                item.getPrice(),
+                item.getStock()
+            });
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        JOptionPane.showMessageDialog(this, "Item not found!");
+    }
+    }//GEN-LAST:event_SearchButton1ActionPerformed
+
+    private void RemoveLastOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveLastOrderActionPerformed
+        if (orderController.getOrders().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "No orders to remove!");
+        return;
+    }
+
+    orderController.removeLastOrder(); // pop()
+    loadOrdersTable();
+
+    JOptionPane.showMessageDialog(this, "Last order removed ");
+    }//GEN-LAST:event_RemoveLastOrderActionPerformed
+
+    private void DeleteSelectedOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteSelectedOrderActionPerformed
+        int row = OrderTable.getSelectedRow();
+
+    if (row == -1) {
+        JOptionPane.showMessageDialog(this, "Select an order first!");
+        return;
+    }
+
+    int orderId = (int) OrderTable.getValueAt(row, 0);
+
+    orderController.getOrders().removeIf(o -> o.getOrderId() == orderId);
+
+    loadOrdersTable();
+    JOptionPane.showMessageDialog(this, "Order deleted!");        // TODO add your handling code here:
+    }//GEN-LAST:event_DeleteSelectedOrderActionPerformed
+
+    private void SortByIDButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SortByIDButtonActionPerformed
+         selectionSortById();
+    }//GEN-LAST:event_SortByIDButtonActionPerformed
+
+    private void SortByNameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SortByNameButtonActionPerformed
+        selectionSortByName();
+    }//GEN-LAST:event_SortByNameButtonActionPerformed
+
+    //BinarySearch
+    
+    private int binarySearchByName(String key) {
+
+    var items = controller.getInventory();
+
+    int low = 0;
+    int high = items.size() - 1;
+
+    while (low <= high) {
+
+        int mid = (low + high) / 2;
+
+        int result =
+                items.get(mid).getName().compareToIgnoreCase(key);
+
+        if (result == 0) {
+            return mid;        // FOUND
+        } else if (result < 0) {
+            low = mid + 1;     // RIGHT
+        } else {
+            high = mid - 1;    // LEFT
+        }
+    }
+
+    return -1; // NOT FOUND
+}
 
     
+    private void SearchButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchButton2ActionPerformed
+        String key = jTextField2.getText().trim();
+
+    if (key.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Enter product name!");
+        return;
+    }
+
+    selectionSortByName();
+
+    int index = binarySearchByName(key);
+
+    DefaultTableModel model =
+            (DefaultTableModel) InventoryTable.getModel();
+    model.setRowCount(0);
+
+    if (index != -1) {
+        ClothingItems item = controller.getInventory().get(index);
+        model.addRow(new Object[]{
+            item.getId(),
+            item.getName(),
+            item.getCategory(),
+            item.getSize(),
+            item.getPrice(),
+            item.getStock()
+        });
+    } else {
+        JOptionPane.showMessageDialog(this, "Item not found!");
+    }
+    }//GEN-LAST:event_SearchButton2ActionPerformed
+
+    private void SearchButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchButton3ActionPerformed
+        String input = jTextField4.getText().trim();
+
+    if (input.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Enter Order ID!");
+        return;
+    }
+
+    int key;
+    try {
+        key = Integer.parseInt(input);
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Order ID must be a number!");
+        return;
+    }
+
+    DefaultTableModel model =
+            (DefaultTableModel) OrderTable.getModel();
+    model.setRowCount(0);
+
+    boolean found = false;
+
+    for (Order order : orderController.getOrders()) {
+        if (order.getOrderId() == key) {
+            model.addRow(new Object[]{
+                order.getOrderId(),
+                order.getCustomerName(),
+                order.getPhone(),
+                order.getAddress(),
+                order.getItemName(),
+                order.getQuantity(),
+                order.getTotal(),
+                order.getDate()
+            });
+            found = true;
+            break; // true linear search
+        }
+    }
+
+    if (!found) {
+        JOptionPane.showMessageDialog(this, "Order not found!");
+    }
+    }//GEN-LAST:event_SearchButton3ActionPerformed
+    
+    private void selectionSortOrdersByName() {
+
+    var orders = orderController.getOrders();
+    int n = orders.size();
+
+    for (int i = 0; i < n - 1; i++) {
+
+        int minIndex = i;
+
+        for (int j = i + 1; j < n; j++) {
+            if (orders.get(j).getItemName()
+                    .compareToIgnoreCase(
+                            orders.get(minIndex).getItemName()
+                    ) < 0) {
+                minIndex = j;
+            }
+        }
+
+        // swap
+        Order temp = orders.get(minIndex);
+        orders.set(minIndex, orders.get(i));
+        orders.set(i, temp);
+    }
+
+    loadOrdersTable();
+}
 
     
+    private void SearchButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchButton4ActionPerformed
+        String key = jTextField3.getText().trim();
+
+    if (key.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Enter item name!");
+        return;
+    }
+
+    // IMPORTANT: SORT FIRST
+    selectionSortOrdersByName();
+
+    int index = binarySearchOrderByName(key);
+
+    DefaultTableModel model =
+            (DefaultTableModel) OrderTable.getModel();
+    model.setRowCount(0);
+
+    if (index != -1) {
+        Order order = orderController.getOrders().get(index);
+        model.addRow(new Object[]{
+            order.getOrderId(),
+            order.getCustomerName(),
+            order.getPhone(),
+            order.getAddress(),
+            order.getItemName(),
+            order.getQuantity(),
+            order.getTotal(),
+            order.getDate()
+        });
+    } else {
+        JOptionPane.showMessageDialog(this, "Order not found!");
+    }
+    }//GEN-LAST:event_SearchButton4ActionPerformed
+
+    private int binarySearchOrderByName(String key) {
+
+    var orders = orderController.getOrders();
+
+    int low = 0;
+    int high = orders.size() - 1;
+
+    while (low <= high) {
+
+        int mid = (low + high) / 2;
+
+        int result =
+                orders.get(mid).getItemName()
+                        .compareToIgnoreCase(key);
+
+        if (result == 0) {
+            return mid;
+        } else if (result < 0) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+
+    return -1;
+}
+
+ private void selectionSortById() {
+
+    var items = controller.getInventory();
+    int n = items.size();
+
+    for (int i = 0; i < n - 1; i++) {
+
+        int minIndex = i;
+
+        for (int j = i + 1; j < n; j++) {
+            if (items.get(j).getId() < items.get(minIndex).getId()) {
+                minIndex = j;
+            }
+        }
+
+        // swap
+        ClothingItems temp = items.get(minIndex);
+        items.set(minIndex, items.get(i));
+        items.set(i, temp);
+    }
+
+    loadInventoryTable();
+}
+
+ private void selectionSortByName() {
+
+    var items = controller.getInventory();
+    int n = items.size();
+
+    for (int i = 0; i < n - 1; i++) {
+
+        int minIndex = i;
+
+        for (int j = i + 1; j < n; j++) {
+            if (items.get(j).getName()
+                    .compareToIgnoreCase(items.get(minIndex).getName()) < 0) {
+                minIndex = j;
+            }
+        }
+
+        // swap
+        ClothingItems temp = items.get(minIndex);
+        items.set(minIndex, items.get(i));
+        items.set(i, temp);
+    }
+
+    loadInventoryTable();
+}
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CreateButton;
     private javax.swing.JButton DashboardButton;
     private javax.swing.JPanel DashboardPanel;
     private javax.swing.JButton DeleteButton;
+    private javax.swing.JButton DeleteSelectedOrder;
     private javax.swing.JButton InventoryButton;
     private javax.swing.JPanel InventoryPanel;
     private javax.swing.JTable InventoryTable;
@@ -700,21 +1102,20 @@ public class AdminPage extends javax.swing.JFrame {
     private javax.swing.JButton LogoutButton;
     private javax.swing.JButton OrderButton;
     private javax.swing.JPanel OrderPanel;
-    private javax.swing.JComboBox<String> OrderSorting;
     private javax.swing.JTable OrderTable;
-    private javax.swing.JPanel OrdersShipped;
     private javax.swing.JTable RecentProductsTable1;
+    private javax.swing.JButton RemoveLastOrder;
     private javax.swing.JPanel RightPanel;
     private javax.swing.JButton SearchButton1;
-    private javax.swing.JComboBox<String> SearchingOrder;
-    private javax.swing.JComboBox<String> SearchingType;
-    private javax.swing.JComboBox<String> SortByAdmin1;
+    private javax.swing.JButton SearchButton2;
+    private javax.swing.JButton SearchButton3;
+    private javax.swing.JButton SearchButton4;
+    private javax.swing.JButton SortByIDButton;
+    private javax.swing.JButton SortByNameButton;
     private javax.swing.JPanel TotalOrders;
     private javax.swing.JPanel TotalProducts;
     private javax.swing.JButton UpdateButton;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -730,6 +1131,8 @@ public class AdminPage extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
     private javax.swing.JPanel logoandnamePanel;
     // End of variables declaration//GEN-END:variables
 }
