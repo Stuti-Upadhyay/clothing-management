@@ -594,30 +594,30 @@ private List<CartItem> cart = new LinkedList<>();
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         linearSearchProducts();
     }//GEN-LAST:event_jButton5ActionPerformed
+    
+    //INSERTIONSORTBYPRICE//
+    
+    private void insertionSortByPrice() {
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-         var items = controller.getInventory();
-    int n = items.size();
+    ArrayList<ClothingItems> items =
+            (ArrayList<ClothingItems>) controller.getInventory();
 
-    // Selection sort by price
-    for (int i = 0; i < n - 1; i++) {
+    for (int i = 1; i < items.size(); i++) {
+        ClothingItems key = items.get(i);
+        int j = i - 1;
 
-        int minIndex = i;
-
-        for (int j = i + 1; j < n; j++) {
-            if (items.get(j).getPrice() < items.get(minIndex).getPrice()) {
-                minIndex = j;
-            }
+        while (j >= 0 && items.get(j).getPrice() > key.getPrice()) {
+            items.set(j + 1, items.get(j));
+            j--;
         }
 
-        // swap
-        ClothingItems temp = items.get(minIndex);
-        items.set(minIndex, items.get(i));
-        items.set(i, temp);
+        items.set(j + 1, key);
     }
+}
 
-    // refresh products table
-    loadProductsTable();// TODO add your handling code here:
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+         insertionSortByPrice();
+         loadProductsTable();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void linearSearchProducts() {

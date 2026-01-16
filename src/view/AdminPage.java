@@ -1039,6 +1039,10 @@ public class AdminPage extends javax.swing.JFrame {
     return -1;
 }
 
+    
+    //SELECTION SORT BY ID -------------------------------------------------------------------------------//
+    
+    
  private void selectionSortById() {
 
     var items = controller.getInventory();
