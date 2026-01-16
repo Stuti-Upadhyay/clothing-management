@@ -181,62 +181,74 @@ public class Action extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
-        try {
-    
-    if (NameTF.getText().isEmpty() ||
-    SizeTF.getText().isEmpty() ||
-    PriceTF.getText().isEmpty() ||
-    StockTF.getText().isEmpty()) {
-
-    JOptionPane.showMessageDialog(this, "All fields are required");
-    return;
-}
-
-
-    int id = Integer.parseInt(IDTF.getText());
-    double price = Double.parseDouble(PriceTF.getText());
-    int stock = Integer.parseInt(StockTF.getText());
-
-    String name = NameTF.getText().trim();
-    String category = jComboBox1.getSelectedItem().toString();
+        String name = NameTF.getText().trim();
     String size = SizeTF.getText().trim();
+    String category = jComboBox1.getSelectedItem().toString();
 
-    // 3. Length validation
+    // 1. Empty fields
+    if (name.isEmpty() || size.isEmpty()
+            || PriceTF.getText().trim().isEmpty()
+            || StockTF.getText().trim().isEmpty()) {
+
+        JOptionPane.showMessageDialog(this, "All fields are required");
+        return;
+    }
+
+    double price;
+    int stock;
+
+    // 2. Number validation
+    try {
+        price = Double.parseDouble(PriceTF.getText().trim());
+        stock = Integer.parseInt(StockTF.getText().trim());
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Price and Stock must be numeric");
+        return;
+    }
+
+    // 3. Value validation
+    if (price <= 0 || stock < 0) {
+        JOptionPane.showMessageDialog(this, "Cannot be negative");
+        return;
+    }
+
+    // 4. Length & format
     if (name.length() > 50) {
         JOptionPane.showMessageDialog(this, "Item name must be less than 50 characters");
         return;
     }
-    if (!size.matches("S|M|L|XL|XXL")) {
-        JOptionPane.showMessageDialog(this, "Size must be S, M, L, XL, or XXL");
+
+    if (!size.matches("S|M|L|XL|XXL|Free Size")) {
+        JOptionPane.showMessageDialog(this, "Size must be S, M, L, XL, XXL or Free Size");
         return;
     }
 
-    if (price <= 0 || stock < 0) {
-        JOptionPane.showMessageDialog(this, "Price must be positive and stock cannot be negative");
-        return;
-    }
+    // 5. CREATE 
+    if (IDTF.isEditable()) {
+        // CREATE
+        if (controller.isDuplicateItem(name, -1)) {
+            JOptionPane.showMessageDialog(this, "Item with this name already exists");
+            return;
+        }
 
-    if (controller.isDuplicateItem(name, id)) {
-        JOptionPane.showMessageDialog(this, "Item with this name already exists");
-        return;
-    }
-
-   
-    if (controller.getItemById(id) == null) {
         controller.addItem(name, category, size, price, stock);
         JOptionPane.showMessageDialog(this, "Item added successfully");
+
     } else {
+        // UPDATE
+        int id = Integer.parseInt(IDTF.getText());
+
+        if (controller.isDuplicateItem(name, id)) {
+            JOptionPane.showMessageDialog(this, "Another item with this name already exists");
+            return;
+        }
+
         controller.updateItem(id, name, category, size, price, stock);
         JOptionPane.showMessageDialog(this, "Item updated successfully");
     }
 
     adminPage.loadInventoryTable();
     this.dispose();
-
-} catch (NumberFormatException e) {
-    JOptionPane.showMessageDialog(this, "Invalid number format in ID");
-}
-
     }//GEN-LAST:event_SaveButtonActionPerformed
 
     private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
